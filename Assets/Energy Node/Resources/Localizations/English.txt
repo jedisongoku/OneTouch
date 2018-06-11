@@ -1,0 +1,26 @@
+titleImageName = title_en
+
+btnStart = GAME START
+btnMore = MORE GAMES
+btnReview = RATE & REVIEW
+btnRetry = RETRY
+
+btnAgain = TRY AGAIN
+btnReturn = RETURN
+
+btnyes = YES
+btnno = NO
+
+totalScore = TOTAL SCORE:
+continue = CONTINUE
+
+lb_ins =Tap (Not Drag) on 2 adjoining  nodes to connect them.\nEach line can be used only once.\nConnect all the nodes to win.
+askTip = Are you sure to use tip?
+
+levelComplete = level completed
+
+level = level
+nextTip = next free tip: 
+seconds = seconds
+
+
