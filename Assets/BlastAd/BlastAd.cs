@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Video;
+using UnityEngine.Audio;
 
 public class BlastAd : MonoBehaviour
 {
-#region Public Variables
+    #region Public Variables
     //Singleton reference
     public static BlastAd instance;
     //The time for the ad to be displayed until the exit button pops up
@@ -20,9 +21,18 @@ public class BlastAd : MonoBehaviour
     public VideoPlayer videoPlayer;
     //Audio sources to enable and disable when Blast ad is playing
     public AudioSource[] nonVideoAudioSources;
-#endregion
+    public GameObject[] canvasesToActivateDeactivate;
+    public AudioMixer mixer;
+    #endregion
 
-#region Private Variables
+    #region Delegate Events
+    public delegate void OnBlastAdShow();
+    public static event OnBlastAdShow OnAdShow;
+    public delegate void OnBlastAdEnd();
+    public static event OnBlastAdEnd OnAdEnd;
+    #endregion
+
+    #region Private Variables
     //The incrementing time counter
     private float timeCounter;
     //if the ad is being shown
@@ -34,14 +44,14 @@ public class BlastAd : MonoBehaviour
     
     private void Awake()
     {
+        DontDestroyOnLoad(gameObject);
         instance = this;
     }
     // Use this for initialization
     void Start ()
     {
-        if (videoPlayer.targetCamera == null)
-            videoPlayer.targetCamera = Camera.main;
-        ShowBlastAd();
+        
+        //ShowBlastAd();
     }
 	
 	// Update is called once per frame
@@ -61,6 +71,8 @@ public class BlastAd : MonoBehaviour
     //Show the Blast Ad
     public void ShowBlastAd()
     {
+        mixer.SetFloat("MasterVolume", -80f);
+        OnAdShow();
         if (videoPlayer.targetCamera == null)
             videoPlayer.targetCamera = Camera.main;
         adPanel.gameObject.SetActive(true);
@@ -84,7 +96,9 @@ public class BlastAd : MonoBehaviour
         {
             source.enabled = true;
             source.Play();
-        }            
+        }
+        OnAdEnd();
+        mixer.SetFloat("MasterVolume", 0f);
     }
 
     public void OpenURL()
@@ -95,5 +109,21 @@ public class BlastAd : MonoBehaviour
     public void AdReward()
     {
         //Replace logic in this function to correctly reward the player
+    }
+
+    public void OnLevelWasLoaded(int level)
+    {
+        if (level == 1)
+            StartCoroutine(WaitForCameraFindAndShowBlastAd());
+    }
+
+    IEnumerator WaitForCameraFindAndShowBlastAd()
+    {
+        while (videoPlayer.targetCamera == null)
+        {
+            videoPlayer.targetCamera = Camera.main;
+            yield return null;
+        }
+        ShowBlastAd();
     }
 }

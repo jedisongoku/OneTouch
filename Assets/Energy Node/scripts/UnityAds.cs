@@ -1,13 +1,15 @@
 using UnityEngine;
 using UnityEngine.Advertisements;
 using System.Collections;
+using System;
 
 public class UnityAds : MonoBehaviour {
 
     public static UnityAds instance;
     public bool rewardZone;
     public bool isAdShowing = false;
-
+    private int adsCounter;
+    private int blastAdsCounter;
     void Awake()
     {
         instance = this;
@@ -29,26 +31,39 @@ public class UnityAds : MonoBehaviour {
 
     public void ShowAd(string zone = "")
     {
-#if UNITY_EDITOR
-        //StartCoroutine(WaitForAd());
-#endif
-        isAdShowing = true;
-        if (string.Equals(zone, ""))
-            zone = null;
-        else
-            rewardZone = true;
-
-        ShowOptions options = new ShowOptions();
-        options.resultCallback = AdCallbackhandler;
-
-        if (Advertisement.IsReady(zone))
+        blastAdsCounter++;
+        if(blastAdsCounter==10)
         {
-            Advertisement.Show(zone, options);
-            Debug.Log("Show AD");
+            BlastAd.instance.ShowBlastAd();
+            blastAdsCounter = 0;
         }
-            
+        else
+        {
+#if UNITY_EDITOR
+            //StartCoroutine(WaitForAd());
+#endif
+            isAdShowing = true;
+            if (string.Equals(zone, ""))
+                zone = null;
+            else
+                rewardZone = true;
 
-        
+            ShowOptions options = new ShowOptions();
+            options.resultCallback = AdCallbackhandler;
+
+            if (Advertisement.IsReady(zone))
+            {
+                Advertisement.Show(zone, options);
+                Debug.Log("Show AD");
+            }
+        }
+    }
+
+    internal void IncreaseCounterAndShowAd()
+    {
+        adsCounter++;
+        if (adsCounter % 3 == 0)
+            ShowAd();
     }
 
     void AdCallbackhandler(ShowResult result)

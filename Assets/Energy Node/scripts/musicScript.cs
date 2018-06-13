@@ -2,13 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
+using UnityEngine.Audio;
 public class musicScript : MonoBehaviour {
 	
 	// Use this for initialization
 	public static string m_publisherId_ios,m_publisherId_android;
 	bool NOADS = false;
 	public static bool loaded = false;
-
+    public AudioMixerGroup mixer;
 	void Start () {
 		if (loaded)
 			return;
@@ -75,7 +76,7 @@ public class musicScript : MonoBehaviour {
 
 
 
-	public AudioSource PlayAudioClip(AudioClip clip,bool isloop = false)
+	public AudioSource PlayAudioClip(AudioClip clip,bool isloop = false,bool isPlayingOnAwake = false)
 	{
 		if (clip == null)return null;
 
@@ -105,13 +106,15 @@ public class musicScript : MonoBehaviour {
 		source = (AudioSource)gameObject.AddComponent<AudioSource>();
 
 
-//		if (!tExist) {
-//			source = (AudioSource)gameObject.AddComponent<AudioSource>();
-//		}
-
-
-
-		source.clip = clip;source.minDistance = 1.0f;source.maxDistance = 50;source.rolloffMode = AudioRolloffMode.Linear;
+        //		if (!tExist) {
+        //			source = (AudioSource)gameObject.AddComponent<AudioSource>();
+        //		}
+        source.playOnAwake = isPlayingOnAwake;
+        source.outputAudioMixerGroup = mixer;
+		source.clip = clip;
+        source.minDistance = 1.0f;
+        source.maxDistance = 50;
+        source.rolloffMode = AudioRolloffMode.Linear;
 		source.transform.position = transform.position;
 		source.loop = isloop;
 		source.Play();

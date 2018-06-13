@@ -35,7 +35,7 @@ public class WinPanel : MonoBehaviour {
 			GameData.getInstance ().cLevel = 0;	
 		}
 
-
+        UnityAds.instance.IncreaseCounterAndShowAd();
 		
 	}
 	

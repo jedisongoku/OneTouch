@@ -76,7 +76,7 @@ public class GameManager{
 				if (GameData.getInstance ().isSoundOn == 0) {
 						if (bgMusic)
 								bgMusic.Stop ();
-						tmusic = music.GetComponent<musicScript> ().PlayAudioClip (clip,true);
+						tmusic = music.GetComponent<musicScript> ().PlayAudioClip (clip,true, true);
 						if (str.Substring (0, 2) == "bg") {
 								musicName = str;
 								bgMusic = tmusic;
@@ -106,7 +106,7 @@ public class GameManager{
 						return null;
 				AudioClip clip = (AudioClip)Resources.Load ("sound/"+str, typeof(AudioClip));
 				if (GameData.getInstance ().isSfxOn == 0) {
-						sfxSound = music.GetComponent<musicScript> ().PlayAudioClip (clip);
+						sfxSound = music.GetComponent<musicScript> ().PlayAudioClip (clip, false, false);
 						if (sfxSound != null) {
 								if (sfxdic.ContainsKey (str) == false || sfxdic [str] != 1) {
 										currentSFX.Add (sfxSound);
@@ -311,7 +311,7 @@ public class GameManager{
 	{
 		Debug.Log("submitting score to GC...");
 		if (Social.localUser.authenticated) {
-			Social.ReportScore(score, leaderboardId, HandleScoreReported);
+			//Social.ReportScore(score, leaderboardId, HandleScoreReported);
 		}
 	}
 	
